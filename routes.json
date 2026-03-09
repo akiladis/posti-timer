@@ -1,0 +1,23 @@
+{
+  "Pyynikinrinne": [
+    {"route":1,"time":0},
+    {"route":2,"time":0},
+    {"route":3,"time":0},
+    {"route":4,"time":0},
+    {"route":5,"time":0}
+  ],
+  "Amuri":[
+    {"route":1,"time":0},
+    {"route":2,"time":0},
+    {"route":3,"time":0},
+    {"route":4,"time":0},
+    {"route":5,"time":0},
+    {"route":6,"time":0}
+  ],
+  "Armonkallio":[
+    {"route":1,"time":0},
+    {"route":2,"time":0},
+    {"route":3,"time":0},
+    {"route":4,"time":0}
+  ]
+}
