@@ -1,12 +1,12 @@
 {
   "Pyynikinrinne": [
-    {"route": Start, "time": 20},
+    {"route": "Start", "time": 20},
     {"route": 8376265, "time": 65},
     {"route": 8376266, "time": 50},
     {"route": 8376267, "time": 40},
     {"route": 8376261, "time": 35},
     {"route": 8376262, "time": 30}
-    {"route": End, "time": 35}
+    {"route": "End", "time": 35}
   ],
 
   "Amuri": [
@@ -19,11 +19,11 @@
   ],
 
   "Armonkallio": [
-    {"route": Start, "time": 20},
+    {"route": "Start", "time": 20},
     {"route": 8376366, "time": 65},
     {"route": 8376275, "time": 90},
     {"route": 8376274, "time": 45},
     {"route": 8376276, "time": 35},
-    {"route": End, "time": 35}
+    {"route": "End", "time": 35}
   ]
 }
