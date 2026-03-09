@@ -1,12 +1,45 @@
 <!DOCTYPE html>
 <html>
 <head>
+
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
 <title>Posti Route Timer</title>
 
 <style>
-body{font-family:Arial;text-align:center;margin-top:40px}
-button{font-size:18px;padding:10px 20px}
+
+body{
+font-family:Arial;
+text-align:center;
+margin-top:40px;
+background:#f4f4f4;
+}
+
+button{
+font-size:20px;
+padding:12px 25px;
+margin-top:10px;
+}
+
+#timer{
+font-size:40px;
+margin-top:20px;
+}
+
+#progress{
+width:80%;
+height:20px;
+background:#ddd;
+margin:auto;
+margin-top:20px;
+}
+
+#bar{
+height:20px;
+width:0%;
+background:green;
+}
+
 </style>
 
 </head>
@@ -21,13 +54,29 @@ button{font-size:18px;padding:10px 20px}
 <option>Armonkallio</option>
 </select>
 
-<br><br>
+<br>
 
 <button onclick="start()">START</button>
+
+<div id="timer">00:00</div>
+
+<div id="progress">
+<div id="bar"></div>
+</div>
+
+<p id="route"></p>
+
+<audio id="alarm">
+<source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg">
+</audio>
 
 <script>
 
 let routes
+let currentRoute=0
+let countdown
+let timeLeft
+let routeList
 
 fetch('routes.json')
 .then(r=>r.json())
@@ -36,21 +85,79 @@ fetch('routes.json')
 function start(){
 
 let area=document.getElementById("area").value
-let routeList=routes[area]
+routeList=routes[area]
 
-let delay=0
+currentRoute=0
 
-routeList.forEach((r,i)=>{
+nextRoute()
 
-setTimeout(()=>{
+}
 
-alert("Route "+r.route+" finished. Start next route.")
+function nextRoute(){
 
-},delay)
+if(currentRoute>=routeList.length){
 
-delay+=r.time*60000
+alert("All routes finished")
 
-})
+return
+
+}
+
+let r=routeList[currentRoute]
+
+timeLeft=r.time*60
+
+document.getElementById("route").innerText="Route "+r.route
+
+updateTimer()
+
+countdown=setInterval(()=>{
+
+timeLeft--
+
+updateTimer()
+
+if(timeLeft<=0){
+
+clearInterval(countdown)
+
+alarm()
+
+currentRoute++
+
+nextRoute()
+
+}
+
+},1000)
+
+}
+
+function updateTimer(){
+
+let m=Math.floor(timeLeft/60)
+let s=timeLeft%60
+
+document.getElementById("timer").innerText=
+m.toString().padStart(2,"0")+":"+s.toString().padStart(2,"0")
+
+let percent=((routeList[currentRoute].time*60-timeLeft)/(routeList[currentRoute].time*60))*100
+
+document.getElementById("bar").style.width=percent+"%"
+
+}
+
+function alarm(){
+
+document.getElementById("alarm").play()
+
+if(navigator.vibrate){
+
+navigator.vibrate([500,200,500])
+
+}
+
+alert("Route finished")
 
 }
 
