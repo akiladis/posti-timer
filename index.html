@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Posti Route Timer</title>
+
+<style>
+body{font-family:Arial;text-align:center;margin-top:40px}
+button{font-size:18px;padding:10px 20px}
+</style>
+
+</head>
+
+<body>
+
+<h2>Posti Route Timer</h2>
+
+<select id="area">
+<option>Pyynikinrinne</option>
+<option>Amuri</option>
+<option>Armonkallio</option>
+</select>
+
+<br><br>
+
+<button onclick="start()">START</button>
+
+<script>
+
+let routes
+
+fetch('routes.json')
+.then(r=>r.json())
+.then(data=>routes=data)
+
+function start(){
+
+let area=document.getElementById("area").value
+let routeList=routes[area]
+
+let delay=0
+
+routeList.forEach((r,i)=>{
+
+setTimeout(()=>{
+
+alert("Route "+r.route+" finished. Start next route.")
+
+},delay)
+
+delay+=r.time*60000
+
+})
+
+}
+
+</script>
+
+</body>
+</html>
