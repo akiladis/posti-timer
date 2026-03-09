@@ -108,6 +108,32 @@ fetch('routes.json')
 
 function start(){
 
+if(!routes){
+alert("Routes are still loading. Please wait 2 seconds and press START again.")
+return
+}
+
+let area = document.getElementById("area").value
+
+routeList = routes[area]
+
+if(!routeList){
+alert("No routes found for this area")
+return
+}
+
+currentRoute = 0
+
+document.getElementById("area").style.display="none"
+document.getElementById("startBtn").style.display="none"
+document.getElementById("resetBtn").style.display="inline"
+
+drawRoutes()
+
+nextRoute()
+
+}
+
 let area=document.getElementById("area").value
 
 routeList=routes[area]
