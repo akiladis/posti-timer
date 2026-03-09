@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Worker Login</title>
+
+<style>
+
+body{
+font-family:Arial;
+text-align:center;
+margin-top:80px;
+}
+
+input{
+font-size:20px;
+padding:10px;
+}
+
+button{
+font-size:20px;
+padding:10px 20px;
+margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h2>Posti Worker Login</h2>
+
+<input id="phone" placeholder="Phone number">
+
+<br>
+
+<button onclick="login()">LOGIN</button>
+
+<p id="msg"></p>
+
+<script>
+
+const allowedNumbers=[
+"0442460793",
+"0442463340",
+"0442456631"
+]
+
+function login(){
+
+let phone=document.getElementById("phone").value
+
+if(allowedNumbers.includes(phone)){
+
+localStorage.setItem("workerPhone",phone)
+
+window.location="index.html"
+
+}else{
+
+document.getElementById("msg").innerText="Access denied"
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
