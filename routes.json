@@ -5,17 +5,19 @@
     {"route": 8376266, "time": 50},
     {"route": 8376267, "time": 40},
     {"route": 8376261, "time": 35},
-    {"route": 8376262, "time": 30}
+    {"route": 8376262, "time": 30},
     {"route": "End", "time": 35}
   ],
 
   "Amuri": [
-    {"route": 8376271, "time": 60},
-    {"route": 2, "time": 45},
-    {"route": 3, "time": 30},
-    {"route": 4, "time": 40},
-    {"route": 5, "time": 35},
-    {"route": 6, "time": 25}
+    {"route": "Start", "time": 20},
+    {"route": 8376271, "time": 27},
+    {"route": 8376274, "time": 23},
+    {"route": 8376275, "time": 50},
+    {"route": 8376276, "time": 49},
+    {"route": 8376277, "time": 25},
+    {"route": 8376278, "time": 50}
+    {"route": "End", "time": 35}
   ],
 
   "Armonkallio": [
