@@ -1,25 +1,29 @@
 {
   "Pyynikinrinne": [
-    {"8376265":1,"time":65},
-    {"8376266":2,"time":50},
-    {"8376267":3,"time":40},
-    {"8376261":4,"time":35},
-    {"8376262":5,"time":30}
+    {"route": Start, "time": 20},
+    {"route": 8376265, "time": 65},
+    {"route": 8376266, "time": 50},
+    {"route": 8376267, "time": 40},
+    {"route": 8376261, "time": 35},
+    {"route": 8376262, "time": 30}
+    {"route": End, "time": 35}
   ],
-  "Amuri":[
-    {"8376271":1,"time":0},
-    {"route":2,"time":0},
-    {"route":3,"time":0},
-    {"route":4,"time":0},
-    {"route":5,"time":0},
-    {"route":6,"time":0}
+
+  "Amuri": [
+    {"route": 8376271, "time": 60},
+    {"route": 2, "time": 45},
+    {"route": 3, "time": 30},
+    {"route": 4, "time": 40},
+    {"route": 5, "time": 35},
+    {"route": 6, "time": 25}
   ],
-  "Armonkallio":[
-    {"To Start":1,"time":20},
-    {"8376366":1,"time":65},
-    {"8376275":2,"time":90},
-    {"8376274":3,"time":45},
-    {"8376276":4,"time":35},
-    {"Stop":1,"time":30}
+
+  "Armonkallio": [
+    {"route": Start, "time": 20},
+    {"route": 8376366, "time": 65},
+    {"route": 8376275, "time": 90},
+    {"route": 8376274, "time": 45},
+    {"route": 8376276, "time": 35},
+    {"route": End, "time": 35}
   ]
 }
