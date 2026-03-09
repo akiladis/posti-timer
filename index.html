@@ -92,19 +92,20 @@ background:green;
 </audio>
 
 <script>
-  if(!localStorage.getItem("workerPhone")){
+
+if(!localStorage.getItem("workerPhone")){
 window.location="login.html"
 }
 
 let routes
 let routeList
-let currentRoute=0
+let currentRoute = 0
 let timeLeft
 let timer
 
 fetch('routes.json')
-.then(r=>r.json())
-.then(data=>routes=data)
+.then(r => r.json())
+.then(data => routes = data)
 
 function start(){
 
@@ -134,26 +135,8 @@ nextRoute()
 
 }
 
-let area=document.getElementById("area").value
-
-routeList=routes[area]
-
-currentRoute=0
-
-document.getElementById("area").style.display="none"
-document.getElementById("startBtn").style.display="none"
-document.getElementById("resetBtn").style.display="inline"
-
-drawRoutes()
-
-nextRoute()
-
-}
-
 function reset(){
-
 location.reload()
-
 }
 
 function drawRoutes(){
@@ -164,44 +147,41 @@ routeList.forEach((r,i)=>{
 
 let cls="pending"
 
-if(i<currentRoute) cls="finished"
-if(i==currentRoute) cls="current"
+if(i < currentRoute) cls="finished"
+if(i === currentRoute) cls="current"
 
-html+=`<div class="route ${cls}">
+html += `<div class="route ${cls}">
 Route ${r.route} (${r.time} min)
 </div>`
 
 })
 
-document.getElementById("routes").innerHTML=html
+document.getElementById("routes").innerHTML = html
 
 }
 
 function nextRoute(){
 
-if(currentRoute>=routeList.length){
-
+if(currentRoute >= routeList.length){
 alert("All routes finished")
-
 return
-
 }
 
-let r=routeList[currentRoute]
+let r = routeList[currentRoute]
 
-timeLeft=r.time*60
+timeLeft = r.time * 60
 
 drawRoutes()
 
 updateTimer()
 
-timer=setInterval(()=>{
+timer = setInterval(()=>{
 
 timeLeft--
 
 updateTimer()
 
-if(timeLeft<=0){
+if(timeLeft <= 0){
 
 clearInterval(timer)
 
@@ -221,15 +201,15 @@ nextRoute()
 
 function updateTimer(){
 
-let m=Math.floor(timeLeft/60)
-let s=timeLeft%60
+let m = Math.floor(timeLeft/60)
+let s = timeLeft % 60
 
-document.getElementById("timer").innerText=
+document.getElementById("timer").innerText =
 m.toString().padStart(2,"0")+":"+s.toString().padStart(2,"0")
 
-let percent=((routeList[currentRoute].time*60-timeLeft)/(routeList[currentRoute].time*60))*100
+let percent = ((routeList[currentRoute].time*60 - timeLeft) / (routeList[currentRoute].time*60)) * 100
 
-document.getElementById("bar").style.width=percent+"%"
+document.getElementById("bar").style.width = percent + "%"
 
 }
 
@@ -238,9 +218,7 @@ function alarm(){
 document.getElementById("alarm").play()
 
 if(navigator.vibrate){
-
 navigator.vibrate([500,200,500])
-
 }
 
 alert("Route finished")
