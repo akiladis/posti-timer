@@ -11,34 +11,29 @@
 body{
 font-family:Arial;
 text-align:center;
-margin-top:40px;
 background:#f4f4f4;
 }
 
 button{
 font-size:20px;
-padding:12px 25px;
+padding:10px 20px;
 margin-top:10px;
 }
 
 #timer{
 font-size:40px;
-margin-top:20px;
+margin:20px;
 }
 
-#progress{
-width:80%;
-height:20px;
-background:#ddd;
-margin:auto;
-margin-top:20px;
+.route{
+padding:8px;
+margin:5px;
+border-radius:5px;
 }
 
-#bar{
-height:20px;
-width:0%;
-background:green;
-}
+.finished{background:#b7e4b7}
+.current{background:#ffe066}
+.pending{background:#dddddd}
 
 </style>
 
@@ -60,11 +55,9 @@ background:green;
 
 <div id="timer">00:00</div>
 
-<div id="progress">
-<div id="bar"></div>
-</div>
+<h3>Routes</h3>
 
-<p id="route"></p>
+<div id="routes"></div>
 
 <audio id="alarm">
 <source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg">
@@ -73,10 +66,10 @@ background:green;
 <script>
 
 let routes
-let currentRoute=0
-let countdown
-let timeLeft
 let routeList
+let currentRoute=0
+let timeLeft
+let timer
 
 fetch('routes.json')
 .then(r=>r.json())
@@ -85,11 +78,35 @@ fetch('routes.json')
 function start(){
 
 let area=document.getElementById("area").value
+
 routeList=routes[area]
 
 currentRoute=0
 
+drawRoutes()
+
 nextRoute()
+
+}
+
+function drawRoutes(){
+
+let html=""
+
+routeList.forEach((r,i)=>{
+
+let cls="pending"
+
+if(i<currentRoute) cls="finished"
+if(i==currentRoute) cls="current"
+
+html+=`<div class="route ${cls}">
+Route ${r.route} (${r.time} min)
+</div>`
+
+})
+
+document.getElementById("routes").innerHTML=html
 
 }
 
@@ -107,11 +124,11 @@ let r=routeList[currentRoute]
 
 timeLeft=r.time*60
 
-document.getElementById("route").innerText="Route "+r.route
+drawRoutes()
 
 updateTimer()
 
-countdown=setInterval(()=>{
+timer=setInterval(()=>{
 
 timeLeft--
 
@@ -119,11 +136,13 @@ updateTimer()
 
 if(timeLeft<=0){
 
-clearInterval(countdown)
+clearInterval(timer)
 
 alarm()
 
 currentRoute++
+
+drawRoutes()
 
 nextRoute()
 
@@ -141,10 +160,6 @@ let s=timeLeft%60
 document.getElementById("timer").innerText=
 m.toString().padStart(2,"0")+":"+s.toString().padStart(2,"0")
 
-let percent=((routeList[currentRoute].time*60-timeLeft)/(routeList[currentRoute].time*60))*100
-
-document.getElementById("bar").style.width=percent+"%"
-
 }
 
 function alarm(){
@@ -156,8 +171,6 @@ if(navigator.vibrate){
 navigator.vibrate([500,200,500])
 
 }
-
-alert("Route finished")
 
 }
 
