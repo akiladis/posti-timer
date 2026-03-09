@@ -95,6 +95,10 @@ background:green;
 
 <script>
 
+if ("Notification" in window) {
+Notification.requestPermission();
+}
+
 if(!localStorage.getItem("workerPhone")){
 window.location="login.html"
 }
@@ -221,6 +225,13 @@ document.getElementById("alarm").play()
 
 if(navigator.vibrate){
 navigator.vibrate([500,200,500])
+}
+
+if(Notification.permission === "granted"){
+new Notification("Route finished",{
+body:"Start next route",
+icon:"icon.png"
+})
 }
 
 alert("Route finished")
