@@ -16,24 +16,46 @@ background:#f4f4f4;
 
 button{
 font-size:20px;
-padding:10px 20px;
+padding:12px 25px;
 margin-top:10px;
 }
 
 #timer{
-font-size:40px;
+font-size:45px;
 margin:20px;
 }
 
 .route{
-padding:8px;
+padding:10px;
 margin:5px;
-border-radius:5px;
+border-radius:6px;
 }
 
-.finished{background:#b7e4b7}
-.current{background:#ffe066}
-.pending{background:#dddddd}
+.finished{
+background:#a7e6a7;
+}
+
+.current{
+background:#ffe066;
+}
+
+.pending{
+background:#dddddd;
+}
+
+#progress{
+width:80%;
+height:20px;
+background:#ccc;
+margin:auto;
+margin-top:20px;
+}
+
+#bar{
+height:20px;
+width:0%;
+background:green;
+}
 
 </style>
 
@@ -51,9 +73,15 @@ border-radius:5px;
 
 <br>
 
-<button onclick="start()">START</button>
+<button id="startBtn" onclick="start()">START</button>
+
+<button id="resetBtn" onclick="reset()" style="display:none;">RESET</button>
 
 <div id="timer">00:00</div>
+
+<div id="progress">
+<div id="bar"></div>
+</div>
 
 <h3>Routes</h3>
 
@@ -83,9 +111,19 @@ routeList=routes[area]
 
 currentRoute=0
 
+document.getElementById("area").style.display="none"
+document.getElementById("startBtn").style.display="none"
+document.getElementById("resetBtn").style.display="inline"
+
 drawRoutes()
 
 nextRoute()
+
+}
+
+function reset(){
+
+location.reload()
 
 }
 
@@ -160,6 +198,10 @@ let s=timeLeft%60
 document.getElementById("timer").innerText=
 m.toString().padStart(2,"0")+":"+s.toString().padStart(2,"0")
 
+let percent=((routeList[currentRoute].time*60-timeLeft)/(routeList[currentRoute].time*60))*100
+
+document.getElementById("bar").style.width=percent+"%"
+
 }
 
 function alarm(){
@@ -171,6 +213,8 @@ if(navigator.vibrate){
 navigator.vibrate([500,200,500])
 
 }
+
+alert("Route finished")
 
 }
 
