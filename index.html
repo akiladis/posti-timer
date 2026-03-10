@@ -22,8 +22,9 @@ margin-top:10px;
 }
 
 #timer{
-font-size:45px;
+font-size:50px;
 margin:20px;
+font-weight:bold;
 }
 
 .route{
@@ -40,6 +41,12 @@ border-radius:6px;
 background:red;
 color:white;
 display:none;
+}
+
+#nextRoute{
+font-size:20px;
+margin-top:10px;
+font-weight:bold;
 }
 
 </style>
@@ -63,7 +70,13 @@ display:none;
 
 <div id="timer">00:00</div>
 
-<button id="stopAlarmBtn" onclick="stopAlarm()">STOP ALARM</button>
+<div id="nextRoute"></div>
+
+<button id="stopAlarmBtn" onclick="stopAlarm()">
+STOP ALARM
+<br>
+<span id="alarmInfo"></span>
+</button>
 
 <h3>Routes</h3>
 <div id="routes"></div>
@@ -210,11 +223,42 @@ let s=remaining%60
 document.getElementById("timer").innerText=
 m.toString().padStart(2,"0")+":"+s.toString().padStart(2,"0")
 
+showNextRoute()
+
 },1000)
 
 }
 
+function showNextRoute(){
+
+if(currentRoute < routeList.length){
+
+let next=routeList[currentRoute].route
+
+document.getElementById("nextRoute").innerText=
+"Current Route: "+next
+
+}
+
+}
+
 function triggerAlarm(){
+
+let route=routeList[currentRoute].route
+
+let finishTime=new Date().toLocaleTimeString([],{
+hour:'2-digit',
+minute:'2-digit'
+})
+
+let nextRouteText=""
+
+if(currentRoute+1 < routeList.length){
+nextRouteText=" | Next: "+routeList[currentRoute+1].route
+}
+
+document.getElementById("alarmInfo").innerText=
+"Route "+route+" finished at "+finishTime+nextRouteText
 
 document.getElementById("stopAlarmBtn").style.display="inline"
 
