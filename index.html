@@ -3,7 +3,6 @@
 <head>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>Posti Route Timer</title>
 
 <link rel="manifest" href="manifest.json">
@@ -33,30 +32,14 @@ margin:5px;
 border-radius:6px;
 }
 
-.finished{
-background:#a7e6a7;
-}
+.finished{background:#a7e6a7;}
+.current{background:#ffe066;}
+.pending{background:#dddddd;}
 
-.current{
-background:#ffe066;
-}
-
-.pending{
-background:#dddddd;
-}
-
-#progress{
-width:80%;
-height:20px;
-background:#ccc;
-margin:auto;
-margin-top:20px;
-}
-
-#bar{
-height:20px;
-width:0%;
-background:green;
+#stopAlarmBtn{
+background:red;
+color:white;
+display:none;
 }
 
 </style>
@@ -76,17 +59,13 @@ background:green;
 <br>
 
 <button id="startBtn" onclick="start()">START</button>
-
 <button id="resetBtn" onclick="reset()" style="display:none;">RESET</button>
 
 <div id="timer">00:00</div>
 
-<div id="progress">
-<div id="bar"></div>
-</div>
+<button id="stopAlarmBtn" onclick="stopAlarm()">STOP ALARM</button>
 
 <h3>Routes</h3>
-
 <div id="routes"></div>
 
 <audio id="alarm">
@@ -95,41 +74,81 @@ background:green;
 
 <script>
 
-if ("Notification" in window) {
-Notification.requestPermission();
-}
-
 if(!localStorage.getItem("workerPhone")){
 window.location="login.html"
 }
 
 let routes
 let routeList
-let currentRoute = 0
-let timeLeft
+let schedule=[]
+let currentRoute=0
 let timer
 
+let alarmInterval
+let vibrationInterval
+
 fetch('routes.json')
-.then(r => r.json())
-.then(data => routes = data)
+.then(r=>r.json())
+.then(data=>{
+routes=data
+restoreSession()
+})
 
 function start(){
 
-if(!routes){
-alert("Routes are still loading. Please wait 2 seconds and press START again.")
-return
-}
-
-let area = document.getElementById("area").value
-
-routeList = routes[area]
+let area=document.getElementById("area").value
+routeList=routes[area]
 
 if(!routeList){
-alert("No routes found for this area")
+alert("Routes not loaded")
 return
 }
 
-currentRoute = 0
+let startTime=Date.now()
+let total=0
+
+schedule=[]
+
+routeList.forEach(r=>{
+total+=r.time
+schedule.push(startTime+total*60000)
+})
+
+localStorage.setItem("routeSchedule",JSON.stringify(schedule))
+localStorage.setItem("routeArea",area)
+
+currentRoute=0
+
+initUI()
+updateTimer()
+
+}
+
+function restoreSession(){
+
+let savedSchedule=localStorage.getItem("routeSchedule")
+let savedArea=localStorage.getItem("routeArea")
+
+if(!savedSchedule || !savedArea) return
+
+routeList=routes[savedArea]
+schedule=JSON.parse(savedSchedule)
+
+let now=Date.now()
+
+currentRoute=schedule.findIndex(t=>now<t)
+
+if(currentRoute===-1){
+reset()
+return
+}
+
+initUI()
+updateTimer()
+
+}
+
+function initUI(){
 
 document.getElementById("area").style.display="none"
 document.getElementById("startBtn").style.display="none"
@@ -137,12 +156,6 @@ document.getElementById("resetBtn").style.display="inline"
 
 drawRoutes()
 
-nextRoute()
-
-}
-
-function reset(){
-location.reload()
 }
 
 function drawRoutes(){
@@ -153,88 +166,85 @@ routeList.forEach((r,i)=>{
 
 let cls="pending"
 
-if(i < currentRoute) cls="finished"
-if(i === currentRoute) cls="current"
+if(i<currentRoute) cls="finished"
+if(i===currentRoute) cls="current"
 
-html += `<div class="route ${cls}">
+html+=`<div class="route ${cls}">
 Route ${r.route} (${r.time} min)
 </div>`
 
 })
 
-document.getElementById("routes").innerHTML = html
-
-}
-
-function nextRoute(){
-
-if(currentRoute >= routeList.length){
-alert("All routes finished")
-return
-}
-
-let r = routeList[currentRoute]
-
-timeLeft = r.time * 60
-
-drawRoutes()
-
-updateTimer()
-
-timer = setInterval(()=>{
-
-timeLeft--
-
-updateTimer()
-
-if(timeLeft <= 0){
-
-clearInterval(timer)
-
-alarm()
-
-currentRoute++
-
-drawRoutes()
-
-nextRoute()
-
-}
-
-},1000)
+document.getElementById("routes").innerHTML=html
 
 }
 
 function updateTimer(){
 
-let m = Math.floor(timeLeft/60)
-let s = timeLeft % 60
+clearInterval(timer)
 
-document.getElementById("timer").innerText =
+timer=setInterval(()=>{
+
+let finish=schedule[currentRoute]
+let remaining=Math.floor((finish-Date.now())/1000)
+
+if(remaining<=0){
+
+triggerAlarm()
+
+currentRoute++
+
+drawRoutes()
+
+if(currentRoute>=schedule.length){
+alert("All routes finished")
+reset()
+return
+}
+
+}
+
+let m=Math.floor(remaining/60)
+let s=remaining%60
+
+document.getElementById("timer").innerText=
 m.toString().padStart(2,"0")+":"+s.toString().padStart(2,"0")
 
-let percent = ((routeList[currentRoute].time*60 - timeLeft) / (routeList[currentRoute].time*60)) * 100
-
-document.getElementById("bar").style.width = percent + "%"
+},1000)
 
 }
 
-function alarm(){
+function triggerAlarm(){
 
+document.getElementById("stopAlarmBtn").style.display="inline"
+
+alarmInterval=setInterval(()=>{
 document.getElementById("alarm").play()
+},2000)
 
+vibrationInterval=setInterval(()=>{
 if(navigator.vibrate){
-navigator.vibrate([500,200,500])
+navigator.vibrate([500,500])
+}
+},1000)
+
 }
 
-if(Notification.permission === "granted"){
-new Notification("Route finished",{
-body:"Start next route",
-icon:"icon.png"
-})
+function stopAlarm(){
+
+clearInterval(alarmInterval)
+clearInterval(vibrationInterval)
+
+document.getElementById("stopAlarmBtn").style.display="none"
+
 }
 
-alert("Route finished")
+function reset(){
+
+localStorage.removeItem("routeSchedule")
+localStorage.removeItem("routeArea")
+
+location.reload()
 
 }
 
